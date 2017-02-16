@@ -5,7 +5,7 @@ const authentication = require('../controller/authentication');
 const passportFile = require('../passport-files/passport');
 const reqAuth = passport.authenticate('jwt', { sessions: false });
 const reqSignIn = passport.authenticate('local', { sessions: false });
-
+const Document = require('../models').Document;
 
 const getAllUsers = (req, res) => {
   User.findAll({
@@ -34,6 +34,7 @@ const getOneUser = (req, res) => {
     attributes: {
       exclude: ['password'],
     },
+    include: [Document],
   })
   .then((user) => {
     res.send(user);
@@ -91,9 +92,10 @@ router.route('/')
   .get(getAllUsers)
   .post(createUser);
 
-// router.route('/:id')
-//   .get(getOneUser)
-//   .put(editUserData)
-//   .delete(deleteUser);
+router.route('/:id')
+  .get(getOneUser)
+  .put(editUserData)
+  .delete(deleteUser);
+
 
 module.exports = router;
